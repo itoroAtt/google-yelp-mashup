@@ -1,13 +1,64 @@
 function MapViewModel() {
 	var map;
-			
-	//array to hold yelp markers
 	var yelp = [];
 
-	//bounding box of all locations
-	var bounds;
+	function initialize(){			
+		google.maps.visualRefresh = true;
 
-	//info window holding yelp items
+		var initial = new google.maps.LatLng(33.7489954,-84.3879824);
+		map   = new google.maps.Map(document.getElementById('map_canvas'), {
+			zoom: 8,
+			center: initial,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			mapTypeControl:false,
+			zoomControl: true,
+			zoomControlOptions: {
+				style: google.maps.ZoomControlStyle.LARGE
+			},
+			scaleControl: false,
+			rotateControl:false,
+			panControl:false
+
+		});
+		//Specify Yelp Category...
+		getYelp('restaurant');
+		
+	}
+	
+	google.maps.event.addDomListener(window, 'load', initialize);
+		
+		
+	//resize map to fit screen
+	google.maps.event.addDomListener(window, "resize", function() {
+		var center = map.getCenter();
+		google.maps.event.trigger(map, "resize");
+		map.setCenter(center); 
+	});
+		
+	function getYelp(term) {
+		bounds = new google.maps.LatLngBounds ();
+		$.getJSON('http://api.yelp.com/business_review_search?lat='+map.getCenter().lat()+'&long='+map.getCenter().lng()+'&limit=20&ywsid=ynoYeq0HNwWfPKFRqK-5qg&term='+term+'&callback=?',
+			function(data)
+			{
+					
+				$.each(data.businesses, function(i,item){
+					generateInfoWindow(item);
+					createYelpMarker(i,item.latitude,item.longitude,item.name, infowindowcontent);
+				});                  
+				
+			}
+		);
+	}
+	
+	function generateInfoWindow(dataItem) {
+		infowindowcontent = '<strong>'+dataItem.name+'</strong><br>';
+		infowindowcontent += '<img src="'+dataItem.photo_url+'"><br>';
+		infowindowcontent += formatPhoneNumber(dataItem.phone);
+		infowindowcontent += '<img class="ratingsimage" src="'+dataItem.rating_img_url_small+'"/> based on ';
+		infowindowcontent += dataItem.review_count + ' reviews<br/>';
+		infowindowcontent += '<a href="'+dataItem.url+'" target="_blank">Check us out on Yelp</a>';
+	}
+	
 	var infowindow = new google.maps.InfoWindow();
 		   
 	//Function to create yelp marker
@@ -54,9 +105,8 @@ function MapViewModel() {
 			yelp[i].setMap(map);
 		}
 	}
-		
-	//updates map based on filtered list
-	updateMap = function(term) {
+	this.updateMap = function() {
+		var term = "restaurant";
 			clearMarkers();
 			bounds = new google.maps.LatLngBounds ();
 			$("#errorMessage").empty().hide();
@@ -79,7 +129,7 @@ function MapViewModel() {
 							count++;
 							generateInfoWindow(item);							
 							createYelpMarker(i,item.latitude,item.longitude,item.name, infowindowcontent);		
-							map.setZoom(18);
+							map.setZoom(14);
 						} 
 						
 					});                
@@ -87,58 +137,19 @@ function MapViewModel() {
 					var errorString = "Filter returned " + count + " result(s)...";
 					$("#errorMessage").append(errorString);
 					$("#errorMessage").show();       
-					count == 0 ? $("#resultsList").hide()  : $("#resultsList").show();
-				}
-			);
+					if(count === 0) {
+						$("#resultsList").hide();
+					} else {
+						$("#resultsList").show();
+					}
+				});
 			
-		}
-			
-	//get data from Yelp...
-	function getYelp(term) {
-		bounds = new google.maps.LatLngBounds ();
-		$.getJSON('http://api.yelp.com/business_review_search?lat='+map.getCenter().lat()+'&long='+map.getCenter().lng()+'&limit=20&ywsid=ynoYeq0HNwWfPKFRqK-5qg&term='+term+'&callback=?',
-			function(data)
-			{
-					
-				$.each(data.businesses, function(i,item){
-					generateInfoWindow(item);
-					createYelpMarker(i,item.latitude,item.longitude,item.name, infowindowcontent);
-				});                  
-				
-			}
-		);
-	}
-
-	//Build the information window...
-	function generateInfoWindow(dataItem) {
-		infowindowcontent = '<strong>'+dataItem.name+'</strong><br>';
-		infowindowcontent += '<img src="'+dataItem.photo_url+'"><br>';
-		infowindowcontent += formatPhoneNumber(dataItem.phone);
-		infowindowcontent += '<img class="ratingsimage" src="'+dataItem.rating_img_url_small+'"/> based on ';
-		infowindowcontent += dataItem.review_count + ' reviews<br/>';
-		infowindowcontent += '<a href="'+dataItem.url+'" target="_blank">Check us out on Yelp</a>';
-	}
-
-	//Initializes everything on the page once the page loads.  In this case, we are specifying the center of the city of Atlanta
-	initialize = function() {
-		var latlng = new google.maps.LatLng(33.7489954,-84.3879824);
-		var myOptions = {
-			zoom: 17,
-			center: latlng,
-			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
-		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 		
-		//Specify Yelp Category...
-		getYelp('restaurant');
-	}
-
-	//resize map to fit screen
-	google.maps.event.addDomListener(window, "resize", function() {
-		var center = map.getCenter();
-		google.maps.event.trigger(map, "resize");
-		map.setCenter(center); 
-	});
+		function showOfflineMessage() {
+			$("#wrapper").hide();
+			$(".offline").show();
+		}
 }
 
 // Activates knockout.js
