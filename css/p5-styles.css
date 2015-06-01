@@ -1,8 +1,10 @@
-html, body {
+html, 
+body {
 	height: 100%;
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
+
 /*!
  * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
  * Code licensed under the Apache License v2.0.
@@ -11,20 +13,22 @@ html, body {
 
 /* Toggle Styles */
 
-#wrapper {
+.wrapper {
 	padding-left: 0;
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	-o-transition: all 0.5s ease;
 	transition: all 0.5s ease;
 }
-#wrapper.toggled {
+
+.wrapper.toggled {
 	padding-left: 250px;
 }
-#sidebar-wrapper {
+
+.sidebar-wrapper {
 	z-index: 1000;
 	position: fixed;
-	left: 0px;
+	left: 0;
 	width: 0;
 	height: 100%;
 	overflow-y: auto;
@@ -34,16 +38,20 @@ html, body {
 	-o-transition: all 0.5s ease;
 	transition: all 0.5s ease;
 }
-#wrapper.toggled #sidebar-wrapper {
+
+.wrapper.toggled .sidebar-wrapper {
 	width: 250px;
 }
-#page-content-wrapper {
+
+.page-content-wrapper {
 	width: 100%;
 	padding: 15px;
 }
-#wrapper.toggled #page-content-wrapper {
+
+.wrapper.toggled .page-content-wrapper {
 	position: absolute;
 }
+
 /* Sidebar Styles */
 
 .sidebar-nav {
@@ -54,72 +62,130 @@ html, body {
 	padding: 0;
 	list-style: none;
 }
+
 .sidebar-nav li {
 	text-indent: 20px;
 	line-height: 40px;
 }
-#map_canvas { height: 800px !important; }
+
+#map_canvas { 
+	height: 800px !important;
+}
+
 .sidebar-nav li a {
 	display: block;
 	text-decoration: none;
-	color: #999999;
+	color: #999;
 }
+
 .sidebar-nav li a:hover {
 	text-decoration: none;
 	color: #fff;
 	background: rgba(255,255,255,0.2);
 }
+
 .sidebar-nav li a:active, .sidebar-nav li a:focus {
 	text-decoration: none;
 }
+
 .sidebar-nav > .sidebar-brand {
 	height: 65px;
 	font-size: 18px;
 	line-height: 60px;
 }
+
 .sidebar-nav > .sidebar-brand a {
-	color: #999999;
+	color: #999;
 }
+
 .sidebar-nav > .sidebar-brand a:hover {
 	color: #fff;
 	background: none;
 }
-#searchbox { font-size: 12px; font-weight: bold; }
-		#spinner { display: none; margin-left:3px;}
-		.error { color: #f00; font-weight: bold; }
-		#errorMessage { display: none; }
-		#resultsList  { max-width: 200px; border: 1px solid gray; margin-top: 0; padding: 0 10px 0; background-color: #E8E8E8; }
-		#resultsList strong {
-			font-size: 15px;
-		}
-		#resultsList li {
-			list-style-type: none;
-			font-size: 12px;
-			padding-bottom: 10px;
-			margin-bottom: 10px;
-			border-bottom: 1px solid gray;
-		}
-		#resultsList li:hover {
-			cursor:pointer; cursor:hand; background-color: #b8b8b8;
-		}
-		
- @media(min-width:310px) {
- .container-fluid, .row, .col-lg-12, #page-content-wrapper { padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0; }
- #map_canvas { height: auto; }
-#wrapper {
-	padding-left: 250px;
+
+.searchbox {
+	font-size: 12px;
+	font-weight: bold;
 }
-#wrapper.toggled {
-	padding-left: 0;
+
+.spinner {
+	display: none;
+	margin-left:3px;
 }
-#sidebar-wrapper {
-	width: 250px;
+
+.error {
+	color: #f00; 
+	font-weight: bold;
 }
-#wrapper.toggled #sidebar-wrapper {
-	width: 0;
+
+.errorMessage {
+	display: none;
 }
-#wrapper.toggled #page-content-wrapper {
-	position: relative;
-	margin-right: 0;
+
+.resultsList  {
+	max-width: 200px;
+	border: 1px solid #ccc;
+	margin-top: 0;
+	padding: 0 10px 0;
+	background-color: #e8e8e8;
 }
+
+.resultsList strong {
+	font-size: 15px;
+}
+
+.resultsList li {
+	list-style-type: none;
+	font-size: 12px;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.resultsList li:hover {
+	cursor:pointer;
+	cursor:hand; 
+	background-color: #b8b8b8;
+}
+
+@media(min-width:310px) {
+	.container-fluid,
+	.row,
+	.col-lg-12,
+	.page-content-wrapper { 
+		padding-left: 0;
+		padding-right: 0; 
+		margin-left: 0; 
+		margin-right: 0;
+	}
+	
+	#map_canvas {
+		height: auto;
+	}
+	
+	.wrapper {
+		padding-left: 250px;
+	}
+	.wrapper.toggled {
+		padding-left: 0;
+	}
+
+	.sidebar-wrapper {
+		width: 250px;
+	}
+
+	.wrapper.toggled .sidebar-wrapper {
+		width: 0;
+	}
+
+	.wrapper.toggled .page-content-wrapper {
+		position: relative;
+		margin-right: 0;
+	} 
+}
+
+@media(max-width:320px) {
+	.btn {
+		font-size: 11px;
+	}
 }

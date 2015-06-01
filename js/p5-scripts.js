@@ -1,28 +1,39 @@
-function MapViewModel() {
-	var map;
+var map;
+
+function mapViewModel() {
 	var yelp = [];
+	var liString = "";
 
-	function initialize(){			
+	function initialize(){
 		google.maps.visualRefresh = true;
+		var self = this;
+		
+		//setting up observables...
+		self.initialLatitude = ko.observable(33.7489954);
+		self.initialLongitude = ko.observable(-84.3879824);
+		self.initialZoom = ko.observable(8);
+		self.initialMapTypeControl = ko.observable(false);
+		self.initialZoomControl = ko.observable(true);
+		self.initialScaleControl = ko.observable(false);
+		self.initialRotateControl = ko.observable(false);
+		self.initialPanControl = ko.observable(false);
+		self.initial = ko.observable(new google.maps.LatLng(self.initialLatitude(),self.initialLongitude()));
 
-		var initial = new google.maps.LatLng(33.7489954,-84.3879824);
-		map   = new google.maps.Map(document.getElementById('map_canvas'), {
-			zoom: 8,
-			center: initial,
+		map = new google.maps.Map(document.getElementById('map_canvas'), {
+			zoom: self.initialZoom(),
+			center: self.initial(),
 			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			mapTypeControl:false,
-			zoomControl: true,
+			mapTypeControl:self.initialMapTypeControl(),
+			zoomControl: self.initialZoomControl(),
 			zoomControlOptions: {
 				style: google.maps.ZoomControlStyle.LARGE
 			},
-			scaleControl: false,
-			rotateControl:false,
-			panControl:false
-
+			scaleControl: self.initialScaleControl(),
+			rotateControl:self.initialRotateControl(),
+			panControl:self.initialPanControl()
 		});
 		//Specify Yelp Category...
 		getYelp('restaurant');
-		
 	}
 	
 	google.maps.event.addDomListener(window, 'load', initialize);
@@ -71,6 +82,7 @@ function MapViewModel() {
 		yelp[i] = new google.maps.Marker({
 			position: markerLatLng,
 			map: map,
+			animation: google.maps.Animation.DROP,
 			title: title,
 			icon: 'images/google-marker.png'
 		});
@@ -80,15 +92,14 @@ function MapViewModel() {
 			infowindow.open(map,yelp[i]);
 		});
 		
-		//build string for the infowindow, then append to the unordered list on the page
+		
+		//build string for the infowindow, then append to the unordered list in the list view
 		$("<li />").html(infowindowcontent).click(function(){ 
 			map.panTo(yelp[i].getPosition());
 			infowindow.setContent(infowindowcontent);
 			infowindow.open(map,yelp[i]);
-		}).appendTo("#resultsList");
+		}).appendTo(".resultsList");
 	}
-			
-			
 		
 	//formats yelp phone number
 	function formatPhoneNumber(num) {
@@ -101,7 +112,8 @@ function MapViewModel() {
 	}
 
 	function setAllMap(map) {
-		for (var i = 0; i < yelp.length; i++) {
+		var yelpLength = yelp.length;
+		for (var i = 0; i < yelpLength; i++) {
 			yelp[i].setMap(map);
 		}
 	}
@@ -109,9 +121,8 @@ function MapViewModel() {
 		var term = "restaurant";
 			clearMarkers();
 			bounds = new google.maps.LatLngBounds ();
-			$("#errorMessage").empty().hide();
-			$("#spinner").show();
-						
+			$(".errorMessage").empty().hide();
+			$(".spinner").show();
 			
 			var termEntered = $("#term").val();
 			termEntered = termEntered.toLowerCase();
@@ -121,36 +132,36 @@ function MapViewModel() {
 				function(data)
 				{
 					var count = 0;
-					$("#resultsList").empty();
+					$(".resultsList").empty();
 					$.each(data.businesses, function(i,item){
 						var searchReturn = item.name;
 						searchReturn = searchReturn.toLowerCase();
 						if(searchReturn.indexOf(termEntered) >= 0) {
 							count++;
-							generateInfoWindow(item);							
-							createYelpMarker(i,item.latitude,item.longitude,item.name, infowindowcontent);		
+							generateInfoWindow(item);
+							createYelpMarker(i,item.latitude,item.longitude,item.name, infowindowcontent);
 							map.setZoom(14);
 						} 
 						
 					});                
-					$("#spinner").hide();
+					$(".spinner").hide();
 					var errorString = "Filter returned " + count + " result(s)...";
-					$("#errorMessage").append(errorString);
-					$("#errorMessage").show();       
+					$(".errorMessage").append(errorString);
+					$(".errorMessage").show();       
 					if(count === 0) {
-						$("#resultsList").hide();
+						$(".resultsList").hide();
 					} else {
-						$("#resultsList").show();
+						$(".resultsList").show();
 					}
 				});
 			
 		};
 		
 		function showOfflineMessage() {
-			$("#wrapper").hide();
+			$(".wrapper").hide();
 			$(".offline").show();
 		}
 }
 
 // Activates knockout.js
-ko.applyBindings(new MapViewModel());
+ko.applyBindings(new mapViewModel());
