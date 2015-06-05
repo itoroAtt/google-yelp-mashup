@@ -1,4 +1,34 @@
+//map object variable...
 var map;
+
+
+var self = this;
+
+//setting up observables...
+self.initialLatitude = ko.observable(33.7489954);
+self.initialLongitude = ko.observable(-84.3879824);
+self.initialZoom = ko.observable(8);
+self.initialMapTypeControl = ko.observable(false);
+self.initialZoomControl = ko.observable(true);
+self.initialScaleControl = ko.observable(false);
+self.initialRotateControl = ko.observable(false);
+self.initialPanControl = ko.observable(false);
+self.initial = ko.observable(new google.maps.LatLng(self.initialLatitude(),self.initialLongitude()));
+
+//declare new google map object
+map = new google.maps.Map(document.getElementById('map_canvas'), {
+	zoom: self.initialZoom(),
+	center: self.initial(),
+	mapTypeId: google.maps.MapTypeId.ROADMAP,
+	mapTypeControl:self.initialMapTypeControl(),
+	zoomControl: self.initialZoomControl(),
+	zoomControlOptions: {
+		style: google.maps.ZoomControlStyle.LARGE
+	},
+	scaleControl: self.initialScaleControl(),
+	rotateControl:self.initialRotateControl(),
+	panControl:self.initialPanControl()
+});
 
 function mapViewModel() {
 	var yelp = [];
@@ -6,32 +36,6 @@ function mapViewModel() {
 
 	function initialize(){
 		google.maps.visualRefresh = true;
-		var self = this;
-		
-		//setting up observables...
-		self.initialLatitude = ko.observable(33.7489954);
-		self.initialLongitude = ko.observable(-84.3879824);
-		self.initialZoom = ko.observable(8);
-		self.initialMapTypeControl = ko.observable(false);
-		self.initialZoomControl = ko.observable(true);
-		self.initialScaleControl = ko.observable(false);
-		self.initialRotateControl = ko.observable(false);
-		self.initialPanControl = ko.observable(false);
-		self.initial = ko.observable(new google.maps.LatLng(self.initialLatitude(),self.initialLongitude()));
-
-		map = new google.maps.Map(document.getElementById('map_canvas'), {
-			zoom: self.initialZoom(),
-			center: self.initial(),
-			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			mapTypeControl:self.initialMapTypeControl(),
-			zoomControl: self.initialZoomControl(),
-			zoomControlOptions: {
-				style: google.maps.ZoomControlStyle.LARGE
-			},
-			scaleControl: self.initialScaleControl(),
-			rotateControl:self.initialRotateControl(),
-			panControl:self.initialPanControl()
-		});
 		//Specify Yelp Category...
 		getYelp('restaurant');
 	}
